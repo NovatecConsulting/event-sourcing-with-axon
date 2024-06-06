@@ -11,6 +11,4 @@ onBeforeMount(() => {
 })
 </script>
 
-<template>
-  <div>Welcome, {{ name }}!</div>
-</template>
+<template>Welcome, {{ name }}!</template>

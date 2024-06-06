@@ -1,6 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.company.company.rsocket
 
-import com.novatecgmbh.eventsourcing.axon.company.company.api.AllCompaniesQuery
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompaniesQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
@@ -25,7 +25,7 @@ class CompanyController(
 
     @MessageMapping("companies")
     fun subscribeAllCompaniesUpdates(): Flux<CompanyQueryResult> =
-        queryGateway.queryUpdates(AllCompaniesQuery(), CompanyQueryResult::class.java)
+        queryGateway.queryUpdates(CompaniesQuery(), CompanyQueryResult::class.java)
 
     @MessageMapping("companies.{id}")
     fun subscribeCompanyByIdUpdates(@DestinationVariable id: CompanyId): Flux<CompanyQueryResult> =

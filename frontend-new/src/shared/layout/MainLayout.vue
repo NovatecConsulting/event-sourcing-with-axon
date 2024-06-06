@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
-
-const drawer = ref(false)
+import UserName from '@/shared/components/UserNameComponent.vue'
+const navigationVisible = ref(false)
 
 type MenuItem = {
   title?: string
@@ -13,12 +13,12 @@ type MenuItem = {
 const items: Ref<Array<MenuItem>> = ref([
   {
     title: 'Projects',
-    route: 'projects',
+    route: '/projects',
     icon: 'mdi-flag'
   },
   {
     title: 'Companies',
-    route: 'companies',
+    route: '/companies',
     icon: 'mdi-chart-gant'
   },
   {
@@ -26,7 +26,7 @@ const items: Ref<Array<MenuItem>> = ref([
   },
   {
     title: 'Signout',
-    route: 'sign-out',
+    route: '/sign-out',
     icon: 'mdi-flag'
   }
 ])
@@ -34,12 +34,20 @@ const items: Ref<Array<MenuItem>> = ref([
 
 <template>
   <v-app>
-    <v-app-bar color="primary" prominent>
-      <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar color="primary">
+      <template v-slot:prepend>
+        <v-app-bar-nav-icon
+          variant="text"
+          @click.stop="navigationVisible = !navigationVisible"
+        ></v-app-bar-nav-icon>
+      </template>
       <v-toolbar-title>YATT - Axon Showcase</v-toolbar-title>
+      <template v-slot:append>
+        <div class="pa-2"><v-icon icon="mdi-account" /><UserName /></div>
+      </template>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" temporary>
+    <v-navigation-drawer v-model="navigationVisible" temporary>
       <v-list>
         <v-list-item
           v-for="item in items"

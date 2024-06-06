@@ -12,33 +12,43 @@ const router = createRouter({
     },
     {
       path: '/sign-in',
-      name: 'SignIn',
-      component: () => import('../pages/SignInPage.vue')
+      name: 'signin',
+      component: () => import('../authentication/SignInPage.vue')
     },
     {
       path: '/sign-out',
-      name: 'SignOut',
-      component: () => import('../pages/SignOutPage.vue')
+      name: 'signout',
+      component: () => import('../authentication/SignOutPage.vue')
     },
     {
       path: '/projects',
-      name: 'Projects',
-      component: () => import('../pages/ProjectsPage.vue')
+      name: 'projects',
+      component: () => import('../projects/pages/ProjectsPage.vue')
     },
     {
-      path: '/projects/:id/tasks',
+      path: '/projects/:projectId',
+      name: 'projectdetails',
+      component: () => import('../projects/pages/ProjectsPage.vue')
+    },
+    {
+      path: '/projects/:projectId/tasks',
       name: 'tasks',
-      component: () => import('../projects/pages/TasksPage.vue')
+      component: () => import('../tasks/pages/TasksPage.vue')
+    },
+    {
+      path: '/projects/:projectId/tasks/:taskId',
+      name: 'taskdetails',
+      component: () => import('../tasks/pages/TasksPage.vue')
     },
     {
       path: '/companies',
-      name: 'Companies',
-      component: () => import('../pages/CompaniesPage.vue')
+      name: 'companies',
+      component: () => import('../companies/pages/CompaniesPage.vue')
     },
     {
       path: '/oidc-callback',
-      name: 'OidcCallback',
-      component: () => import('../pages/CallBackPage.vue')
+      name: 'oidccallback',
+      component: () => import('../authentication/CallBackPage.vue')
     }
   ]
 })
@@ -48,12 +58,12 @@ router.beforeEach((to, from) => {
   const user = oidcState.state.value.user
   const isAuthenticated = user !== null && user.expired !== true
   console.log('Vue Router: Navigating from ' + from.path + ' to ' + to.path)
-  if (to.name === 'OidcCallback') {
+  if (to.name === 'oidccallback') {
     return true
   }
-  if (!isAuthenticated && to.name !== 'SignIn') {
+  if (!isAuthenticated && to.name !== 'signin') {
     console.log('User is not authenticated, redirecting to /sign-in')
-    return { name: 'SignIn' }
+    return { name: 'signin' }
   }
 })
 

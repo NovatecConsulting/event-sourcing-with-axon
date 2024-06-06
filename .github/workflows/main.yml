@@ -99,3 +99,21 @@ jobs:
       - name: Bundle application
         working-directory: ./frontend
         run: npm build
+
+  frontend-v2:
+    name: Build new frontend (vue) with npm
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: ./frontend-new/package-lock.json
+      - name: Install dependencies
+        working-directory: ./frontend-new
+        run: npm install
+      - name: Bundle application
+        working-directory: ./frontend-new
+        run: npm run build

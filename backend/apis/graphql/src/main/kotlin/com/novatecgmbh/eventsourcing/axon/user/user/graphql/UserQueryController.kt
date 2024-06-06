@@ -1,5 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.user.user.graphql
 
+import com.novatecgmbh.eventsourcing.axon.application.security.RegisteredUserPrincipal
 import com.novatecgmbh.eventsourcing.axon.company.employee.api.EmployeeQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQueryResult
 import com.novatecgmbh.eventsourcing.axon.user.api.AllUsersQuery
@@ -11,6 +12,8 @@ import org.axonframework.extensions.kotlin.queryMany
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
 
 @Controller
@@ -18,6 +21,12 @@ class UserQueryController(val queryGateway: QueryGateway) {
 
     @QueryMapping
     fun users(): CompletableFuture<List<UserQueryResult>> = queryGateway.queryMany(AllUsersQuery())
+
+    @QueryMapping
+    fun currentUser(
+        @AuthenticationPrincipal user: UsernamePasswordAuthenticationToken
+    ): CompletableFuture<UserQueryResult> =
+        queryGateway.query(UserQuery((user.principal as RegisteredUserPrincipal).identifier))
 
     // TODO: Change to BatchMapping to be more efficient
     @SchemaMapping(typeName = "Participant")

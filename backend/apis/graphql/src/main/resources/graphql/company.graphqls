@@ -1,6 +1,6 @@
 extend type Query {
     company(identifier:ID!): Company
-    companies: [Company]
+    companies(userAllowedToCreateProjectFor: Boolean = false): [Company]
     employee(identifier:ID!): Employee
 }
 

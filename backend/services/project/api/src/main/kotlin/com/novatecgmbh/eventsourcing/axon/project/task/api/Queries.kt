@@ -16,6 +16,7 @@ data class TaskQuery(val taskId: TaskId)
 
 data class TaskQueryResult(
     val identifier: TaskId,
+    val version: Int,
     val projectId: ProjectId,
     val name: String,
     val description: String?,

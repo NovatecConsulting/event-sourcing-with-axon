@@ -33,3 +33,5 @@ data class ProjectDetailsQueryResult(
     val startedTasksCount: Long,
     val completedTasksCount: Long,
 )
+
+class CompanyIdsUserCanCreateProjectsForQuery()

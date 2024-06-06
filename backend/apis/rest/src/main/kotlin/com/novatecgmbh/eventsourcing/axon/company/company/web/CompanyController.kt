@@ -1,6 +1,6 @@
 package com.novatecgmbh.eventsourcing.axon.company.company.web
 
-import com.novatecgmbh.eventsourcing.axon.company.company.api.AllCompaniesQuery
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompaniesQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
@@ -25,13 +25,13 @@ class CompanyController(
 ) {
     @GetMapping
     fun getAllCompanies(): CompletableFuture<List<CompanyQueryResult>> =
-        queryGateway.queryMany(AllCompaniesQuery())
+        queryGateway.queryMany(CompaniesQuery())
 
     @GetMapping(produces = [APPLICATION_NDJSON_VALUE])
     fun getAllCompaniesAndUpdates(): Flux<CompanyQueryResult> {
         val query =
             queryGateway.subscriptionQuery(
-                AllCompaniesQuery(),
+                CompaniesQuery(),
                 ResponseTypes.multipleInstancesOf(CompanyQueryResult::class.java),
                 ResponseTypes.instanceOf(CompanyQueryResult::class.java)
             )

@@ -1,12 +1,14 @@
 extend type Query {
     projects: [Project]
     project(identifier: ID!): Project
+    tasks(projectIdentifier: ID!): [Task]
     task(identifier: ID!): Task
     participant(identifier: ID!): Participant
 }
 
 type Subscription {
-    projects: Project
+    project: Project
+    tasks(projectIdentifier: ID!): Task
 }
 
 extend type Mutation {
@@ -80,6 +82,7 @@ extend type Mutation {
 
 type Project {
     identifier: ID!
+    version: Int!
     name: String!
     startDate: String
     deadline: String
@@ -88,16 +91,29 @@ type Project {
     actualEndDate: String
     tasks(from: Date, to: Date): [Task]
     participants: [Participant]
+    statistics: ProjectStatistics
+}
+
+type ProjectStatistics {
+    tasks: TasksStatistics,
+}
+
+type TasksStatistics {
+    all: Int!,
+    planned: Int!,
+    started: Int!,
+    completed: Int!
 }
 
 type Task {
     identifier: ID!
+    version: Int!
     name: String!
     description: String
     startDate: String
     endDate: String
     status: TaskStatus!
-    participant: Participant
+    assignee: Participant
     todos: [Todo]
 }
 

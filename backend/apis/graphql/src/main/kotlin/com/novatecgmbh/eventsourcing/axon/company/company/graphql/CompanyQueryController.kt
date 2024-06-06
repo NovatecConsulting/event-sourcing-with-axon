@@ -1,10 +1,11 @@
 package com.novatecgmbh.eventsourcing.axon.company.company.graphql
 
-import com.novatecgmbh.eventsourcing.axon.company.company.api.AllCompaniesQuery
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompaniesQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQuery
 import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyQueryResult
 import com.novatecgmbh.eventsourcing.axon.project.participant.api.ParticipantQueryResult
+import com.novatecgmbh.eventsourcing.axon.project.project.api.CompanyIdsUserCanCreateProjectsForQuery
 import java.util.concurrent.CompletableFuture
 import org.axonframework.extensions.kotlin.query
 import org.axonframework.extensions.kotlin.queryMany
@@ -30,6 +31,20 @@ class CompanyQueryController(val queryGateway: QueryGateway) {
         queryGateway.let { queryGateway.query(CompanyQuery(participant.companyId)) }
 
     @QueryMapping
-    fun companies(): CompletableFuture<List<CompanyQueryResult>> =
-        queryGateway.queryMany(AllCompaniesQuery())
+    fun companies(
+        @Argument userAllowedToCreateProjectFor: Boolean
+    ): CompletableFuture<List<CompanyQueryResult>> {
+        val companies =
+            if (userAllowedToCreateProjectFor) {
+                    queryGateway.queryMany<CompanyId, CompanyIdsUserCanCreateProjectsForQuery>(
+                        CompanyIdsUserCanCreateProjectsForQuery()
+                    )
+                } else {
+                    CompletableFuture.completedFuture(emptySet<CompanyId>())
+                }
+                .get()
+        return queryGateway.queryMany<CompanyQueryResult, CompaniesQuery>(
+            CompaniesQuery(companies.toSet())
+        )
+    }
 }

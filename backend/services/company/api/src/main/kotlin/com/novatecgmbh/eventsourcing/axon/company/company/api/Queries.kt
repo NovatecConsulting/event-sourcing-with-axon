@@ -2,7 +2,7 @@ package com.novatecgmbh.eventsourcing.axon.company.company.api
 
 import com.novatecgmbh.eventsourcing.axon.common.api.AggregateReference
 
-class AllCompaniesQuery
+class CompaniesQuery(val companyIds: Set<CompanyId> = emptySet())
 
 data class CompanyQuery(val companyId: CompanyId)
 

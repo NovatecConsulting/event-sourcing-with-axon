@@ -45,6 +45,7 @@ class TaskProjection(
     fun toQueryResult() =
         TaskQueryResult(
             identifier,
+            version.toInt(),
             projectId,
             name,
             description,

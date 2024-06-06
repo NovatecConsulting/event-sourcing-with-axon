@@ -70,4 +70,14 @@ interface ProjectAclRepository : JpaRepository<ProjectAcl, ProjectAclKey> {
         @Param("userId") userId: UserId,
         @Param("companyId") companyId: String
     ): Boolean
+
+    @Query(
+        "select p.key.aggregateIdentifier from ProjectAcl p " +
+            "where p.key.aggregateType " +
+            "= com.novatecgmbh.eventsourcing.axon.project.authorization.acl.AuthorizableAggregateTypesEnum.COMPANY " +
+            "and p.key.permission " +
+            "= com.novatecgmbh.eventsourcing.axon.project.authorization.acl.PermissionEnum.CREATE_PROJECT " +
+            "and p.key.userId = :userId"
+    )
+    fun findAllCompaniesUserCanCreateProjectFor(@Param("userId") userId: UserId): List<String>
 }

@@ -45,7 +45,7 @@ class ParticipantQueryController(val queryGateway: QueryGateway) {
 
     // TODO: Change to batch mapping
     @SchemaMapping(typeName = "Task")
-    fun participant(task: TaskQueryResult): CompletableFuture<ParticipantQueryResult?> =
+    fun assignee(task: TaskQueryResult): CompletableFuture<ParticipantQueryResult?> =
         if (task.participantId != null) {
             queryGateway.query(ParticipantQuery(task.participantId!!))
         } else CompletableFuture.completedFuture(null)

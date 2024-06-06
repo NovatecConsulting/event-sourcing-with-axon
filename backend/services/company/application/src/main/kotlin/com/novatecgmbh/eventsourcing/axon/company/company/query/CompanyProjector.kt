@@ -45,7 +45,7 @@ class CompanyProjector(
             query.companyId == company.identifier
         }
 
-        queryUpdateEmitter.emit<AllCompaniesQuery, CompanyQueryResult>(company.toQueryResult()) {
+        queryUpdateEmitter.emit<CompaniesQuery, CompanyQueryResult>(company.toQueryResult()) {
             true
         }
     }

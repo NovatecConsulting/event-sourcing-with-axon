@@ -1,19 +1,20 @@
 package com.novatecgmbh.eventsourcing.axon.project.task.graphql
 
+import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectId
 import com.novatecgmbh.eventsourcing.axon.project.project.api.ProjectQueryResult
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskId
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQuery
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TaskQueryResult
-import com.novatecgmbh.eventsourcing.axon.project.task.api.TasksByMultipleProjectsQuery
+import com.novatecgmbh.eventsourcing.axon.project.task.api.*
 import java.time.LocalDate
 import java.util.concurrent.CompletableFuture
 import org.axonframework.extensions.kotlin.query
 import org.axonframework.extensions.kotlin.queryMany
+import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.graphql.data.method.annotation.SchemaMapping
+import org.springframework.graphql.data.method.annotation.SubscriptionMapping
 import org.springframework.stereotype.Controller
+import reactor.core.publisher.Flux
 
 @Controller
 class TaskQueryController(val queryGateway: QueryGateway) {
@@ -42,6 +43,22 @@ class TaskQueryController(val queryGateway: QueryGateway) {
     //            }
     //          }
     //          .toMono()
+
+    @QueryMapping
+    fun tasks(@Argument projectIdentifier: ProjectId): CompletableFuture<List<TaskQueryResult>> =
+        queryGateway.queryMany(TasksByProjectQuery(projectIdentifier))
+
+    @SubscriptionMapping("tasks")
+    fun taskUpdates(@Argument projectIdentifier: ProjectId): Flux<TaskQueryResult> {
+        val query =
+            queryGateway.subscriptionQuery(
+                TasksByProjectQuery(projectIdentifier),
+                ResponseTypes.multipleInstancesOf(TaskQueryResult::class.java),
+                ResponseTypes.instanceOf(TaskQueryResult::class.java)
+            )
+
+        return query.updates().doFinally { query.cancel() }
+    }
 
     @SchemaMapping(typeName = "Project")
     fun tasks(

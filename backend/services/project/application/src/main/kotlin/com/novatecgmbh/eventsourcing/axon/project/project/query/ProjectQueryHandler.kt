@@ -1,6 +1,7 @@
 package com.novatecgmbh.eventsourcing.axon.project.project.query
 
 import com.novatecgmbh.eventsourcing.axon.application.auditing.AuditUserId
+import com.novatecgmbh.eventsourcing.axon.company.company.api.CompanyId
 import com.novatecgmbh.eventsourcing.axon.project.authorization.ProjectAuthorizationService
 import com.novatecgmbh.eventsourcing.axon.project.authorization.acl.ProjectAclRepository
 import com.novatecgmbh.eventsourcing.axon.project.project.api.*
@@ -42,4 +43,11 @@ class ProjectQueryHandler(
         authService.runWhenAuthorizedForProject(UserId(userId), query.projectId) {
             detailsRepository.findById(query.projectId).map { it.toQueryResult() }
         }
+
+    @QueryHandler
+    fun handle(
+        query: CompanyIdsUserCanCreateProjectsForQuery,
+        @AuditUserId userId: String
+    ): Iterable<CompanyId> =
+        aclRepository.findAllCompaniesUserCanCreateProjectFor(UserId(userId)).map { CompanyId(it) }
 }
